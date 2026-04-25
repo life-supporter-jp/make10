@@ -29,7 +29,7 @@
         /* ヘッダー画像 */
         .banner-container img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px; }
         
-        /* ゲームコンテナ */
+        /* ゲームカード */
         .game-card {
             background-color: #fff;
             padding: 1.5rem;
@@ -37,11 +37,12 @@
             border: 2px solid #e2e8f0;
             text-align: center;
             margin: 20px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .main-title { font-size: 24px; font-weight: bold; color: #4a90e2; margin-bottom: 1rem; }
 
-        /* 数字タイル表示（問題） */
+        /* 数字タイル表示 */
         #numbers { display: flex; justify-content: center; gap: 10px; margin-bottom: 1.5rem; }
         .number-tile {
             font-size: 1.5rem;
@@ -68,6 +69,7 @@
             margin-bottom: 1rem;
             padding: 0 10px;
             color: #2d3748;
+            word-break: break-all;
         }
 
         /* 操作ボタン群 */
@@ -76,7 +78,7 @@
             grid-template-columns: repeat(4, 1fr);
             max-width: 320px;
             margin: 0 auto 1.5rem;
-            gap: 10px;
+            gap: 12px;
         }
         .action-button {
             aspect-ratio: 1 / 1;
@@ -92,7 +94,7 @@
         .action-button:active { transform: scale(0.95); }
 
         .number-button { background-color: #48bb78; color: #fff; }
-        .number-button:disabled { background-color: #cbd5e0; color: #718096; }
+        .number-button:disabled { background-color: #cbd5e0; color: #718096; cursor: not-allowed; }
         .op-button { background-color: #f6ad55; color: #fff; }
         .control-button { background-color: #e53e3e; color: #fff; }
 
@@ -105,14 +107,15 @@
         .solution-container { margin-top: 1.5rem; border-top: 2px solid #edf2f7; padding-top: 1rem; text-align: left; }
         .solution-item { font-size: 1rem; padding: 5px 0; border-bottom: 1px dashed #e2e8f0; }
 
-        /* フッターメッセージ */
+        /* フッター */
         .footer-msg { font-size: 18px; font-weight: bold; margin-top: 30px; }
-        .link-url { color: blue; font-size: 20px; text-decoration: underline; word-break: break-all; }
+        .qr-area { text-align: center; margin-top: 40px; padding-bottom: 50px; }
 
         @media (max-width: 600px) {
             .wrap { padding: 10px; }
             .number-tile { width: 45px; height: 45px; font-size: 1.2rem; }
             #expression { font-size: 1.4rem; }
+            .buttons-grid { gap: 8px; }
         }
     </style>
 </head>
@@ -124,7 +127,7 @@
     </div>
 
     <div style="text-align:center; margin-top:15px;">
-        <h2>数字と演算子を使って「10」を作ろう！</h2>
+        <h2 style="font-weight: bold;">数字と演算子を使って「10」を作ろう！</h2>
     </div>
 
     <div class="game-card">
@@ -134,7 +137,7 @@
         <div id="expression"></div>
         <div class="message" id="message"></div>
 
-        <p style="margin-bottom:15px;"><b>下のボタンをタップして式を作ろう！</b></p>
+        <p style="margin-bottom:15px;"><b>下のボタンをタップして計算式を作ろう！</b></p>
         
         <div class="buttons-grid" id="action-buttons-grid">
             <button class="action-button op-button" data-op="+">+</button>
@@ -142,34 +145,22 @@
             <button class="action-button op-button" data-op="*">×</button>
             <button class="action-button op-button" data-op="/">÷</button>
             
-            <button class="action-button op-button" id="paren-open" data-op="(">(</button>
-            <button class="action-button op-button" id="paren-close" data-op=")">)</button>
+            <button class="action-button op-button" data-op="(">(</button>
+            <button class="action-button op-button" data-op=")">)</button>
             <button class="action-button control-button" id="undo-button">←</button>
             <button class="action-button control-button" id="clear-button">C</button>
         </div>
 
         <div class="flex justify-center gap-4">
-            <button class="px-6 py-3 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600" id="check-button">チェック</button>
-            <button class="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-blue-600" id="new-game-button">次の問題</button>
+            <button class="px-6 py-3 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 transition-colors" id="check-button">チェック</button>
+            <button class="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-blue-600 transition-colors" id="new-game-button">次の問題</button>
         </div>
 
         <div id="solution-container" class="solution-container hidden">
-            <div style="font-weight:bold; color:#4a90e2; margin-bottom:10px;">すべての解答例:</div>
+            <div style="font-weight:bold; color:#4a90e2; margin-bottom:10px;">解答例（一部）:</div>
             <ul id="solution-list" class="list-none p-0"></ul>
         </div>
     </div>
-
-    <div style="background:#f9fafb; padding:15px; border-radius:8px; font-size:16px;">
-        <h3 style="font-weight:bold; border-left:4px solid #4a90e2; padding-left:10px; margin-bottom:10px;">遊び方</h3>
-        <ul style="list-style:none; padding:0;">
-            <li>1. <b>「次の問題」</b>で4つの数字を出します。</li>
-            <li>2. 数字と <b>＋ － × ÷ ( )</b> を使って計算結果を<b>10</b>にします。</li>
-            <li>3. 数字は必ず<b>1回ずつすべて</b>使ってください。</li>
-            <li>4. <b>「チェック」</b>で判定。解答例も表示されます。</li>
-        </ul>
-    </div>
-
-    <hr style="margin: 30px 0;">
 
     <div class="footer-msg">
         今回のアプリは如何だったでしょうか？他にも使えるアプリ、脳トレができるゲームや趣味に俳句、和歌などが利用できるサイトをご案内します。また大事な記録をサーバーに残せるサイトで、何かあった時に情報開示も指定できるサイトです。スマホのID、PWを記録しておくと安心です。
@@ -179,11 +170,20 @@
         <img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012085.jpg">
     </div>
 
-    <div style="text-align: center; margin-top: 25px;"><b>以下より体験版をご確認ください。</b></div>
-    <p style="text-align: center;"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px;"></p>
-    <div style="text-align: center; margin-bottom: 40px;">
-        <a href="https://life-supporter.jp/lp/HRSuykFf" class="link-url">https://life-supporter.jp/lp/HRSuykFf</a>
+    <div class="qr-area">
+        <div style="font-size: 22px; font-weight: bold; margin-bottom: 20px;">以下より体験版をご確認ください。</div>
+        
+        <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+            <img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" alt="体験版QRコード" style="width: 200px; height: auto;">
+        </div>
+
+        <div style="margin-top: 10px;">
+            <a href="https://life-supporter.jp/lp/HRSuykFf" style="color: #0000FF; font-size: 20px; text-decoration: underline; font-weight: bold; word-break: break-all;">
+                https://life-supporter.jp/lp/HRSuykFf
+            </a>
+        </div>
     </div>
+
 </div>
 
 <script>
@@ -203,15 +203,22 @@
         let expression = '';        
         let expressionDisplay = ''; 
         let usedButtons = [];       
-        const OPS = ['+', '-', '*', '/']; 
 
         function generateNumbers() {
             currentNumbers = [];
             usedButtons = [];
             actionButtonsGrid.querySelectorAll('.number-button').forEach(btn => btn.remove());
-            for (let i = 0; i < 4; i++) {
-                currentNumbers.push(Math.floor(Math.random() * 9) + 1);
+            
+            // 少なくとも1つは解がある数字の組み合わせを探す（簡易ループ）
+            for(let attempt = 0; attempt < 10; attempt++){
+                let tempNums = Array.from({length: 4}, () => Math.floor(Math.random() * 9) + 1);
+                if(findSolutions(tempNums).length > 0) {
+                    currentNumbers = tempNums;
+                    break;
+                }
+                currentNumbers = tempNums; // 解がなくても最後はセット
             }
+
             renderButtons();
             renderNumbers();
             expression = '';
@@ -222,14 +229,20 @@
         }
         
         function renderButtons() {
+            // 数字ボタンをグリッドの最初に追加
             for (let i = 3; i >= 0; i--) { 
                 const num = currentNumbers[i];
                 const button = document.createElement('button');
                 button.classList.add('action-button', 'number-button');
                 button.textContent = num;
-                button.setAttribute('data-index', i);
+                button.addEventListener('click', () => {
+                    expression += num;
+                    expressionDisplay += num;
+                    usedButtons.push(button);
+                    button.disabled = true;
+                    updateExpression();
+                });
                 actionButtonsGrid.prepend(button); 
-                button.addEventListener('click', handleButtonClick);
             }
         }
 
@@ -254,43 +267,43 @@
                 return;
             }
             try {
-                let calcExpression = expression.replace(/×/g, '*').replace(/÷/g, '/');
-                const result = eval(calcExpression);
+                let calc = expression.replace(/×/g, '*').replace(/÷/g, '/');
+                const result = eval(calc);
                 if (Math.abs(result - 10) < 0.0001) {
-                    messageElement.textContent = '正解です！お見事！';
+                    messageElement.textContent = '正解です！素晴らしい！';
                     messageElement.className = 'message correct';
                 } else {
-                    messageElement.textContent = `残念！ 答えは ${result} でした。`;
+                    messageElement.textContent = `残念、答えは ${result} でした。`;
                     messageElement.className = 'message incorrect';
                 }
             } catch (e) {
-                messageElement.textContent = '式が正しくありません。';
+                messageElement.textContent = '計算式が正しくありません。';
                 messageElement.className = 'message incorrect';
             }
-            displayAllSolutions();
+            showSolutions();
         }
 
-        function displayAllSolutions() {
+        function showSolutions() {
+            const sols = findSolutions(currentNumbers);
             solutionList.innerHTML = '';
             solutionContainer.classList.remove('hidden');
-            const solutions = findSolutions(currentNumbers);
-            if (solutions.length === 0) {
-                solutionList.innerHTML = '<li class="solution-item">この問題には10になる組み合わせがありませんでした。</li>';
-                return;
+            if (sols.length === 0) {
+                solutionList.innerHTML = '<li class="solution-item">解が見つかりませんでした。</li>';
+            } else {
+                sols.slice(0, 5).forEach(s => {
+                    const li = document.createElement('li');
+                    li.className = 'solution-item';
+                    li.textContent = s.startsWith('(') ? s.slice(1, -1) : s;
+                    solutionList.appendChild(li);
+                });
             }
-            solutions.slice(0, 10).forEach(sol => {
-                const li = document.createElement('li');
-                li.className = 'solution-item';
-                li.textContent = sol.startsWith('(') ? sol.slice(1,-1) : sol;
-                solutionList.appendChild(li);
-            });
         }
 
         function findSolutions(nums) {
-            const solutions = new Set();
+            const res = new Set();
             function solve(arr) {
                 if (arr.length === 1) {
-                    if (Math.abs(arr[0].val - 10) < 0.0001) solutions.add(arr[0].exp);
+                    if (Math.abs(arr[0].v - 10) < 0.001) res.add(arr[0].e);
                     return;
                 }
                 for (let i = 0; i < arr.length; i++) {
@@ -298,51 +311,67 @@
                         if (i === j) continue;
                         const a = arr[i], b = arr[j];
                         const rest = arr.filter((_, k) => k !== i && k !== j);
-                        solve([{val: a.val + b.val, exp: `(${a.exp}+${b.exp})`}, ...rest]);
-                        solve([{val: a.val - b.val, exp: `(${a.exp}-${b.exp})`}, ...rest]);
-                        solve([{val: a.val * b.val, exp: `(${a.exp}×${b.exp})`}, ...rest]);
-                        if (Math.abs(b.val) > 0.0001) solve([{val: a.val / b.val, exp: `(${a.exp}÷${b.exp})`}, ...rest]);
+                        solve([{v: a.v + b.v, e: `(${a.e}+${b.e})`}, ...rest]);
+                        solve([{v: a.v - b.v, e: `(${a.e}-${b.e})`}, ...rest]);
+                        solve([{v: a.v * b.val, e: `(${a.e}×${b.e})`}, ...rest]);
+                        if (Math.abs(b.v) > 0.001) solve([{v: a.v / b.v, e: `(${a.e}÷${b.e})`}, ...rest]);
                     }
                 }
             }
-            solve(nums.map(n => ({val: n, exp: n.toString()})));
-            return Array.from(solutions);
+            // 内部計算用の簡略化
+            function solveInternal(a) {
+                if (a.length === 1) {
+                    if (Math.abs(a[0].v - 10) < 0.001) res.add(a[0].e);
+                    return;
+                }
+                for (let i = 0; i < a.length; i++) {
+                    for (let j = 0; j < a.length; j++) {
+                        if (i === j) continue;
+                        const rest = a.filter((_, k) => k !== i && k !== j);
+                        const v1 = a[i].v, v2 = a[j].v, e1 = a[i].e, e2 = a[j].e;
+                        solveInternal([{v: v1+v2, e: `(${e1}+${e2})`}, ...rest]);
+                        solveInternal([{v: v1-v2, e: `(${e1}-${e2})`}, ...rest]);
+                        solveInternal([{v: v1*v2, e: `(${e1}×${e2})`}, ...rest]);
+                        if (v2 !== 0) solveInternal([{v: v1/v2, e: `(${e1}÷${e2})`}, ...rest]);
+                    }
+                }
+            }
+            solveInternal(nums.map(n => ({v: n, e: n.toString()})));
+            return Array.from(res);
         }
 
-        function handleButtonClick(e) {
-            const button = e.target;
-            if (button.classList.contains('number-button')) {
-                expression += button.textContent;
-                expressionDisplay += button.textContent;
-                usedButtons.push(button);
-                button.disabled = true;
-            } else if (button.getAttribute('data-op')) {
-                const op = button.getAttribute('data-op');
-                const disp = button.textContent;
+        // 記号ボタンイベント
+        document.querySelectorAll('.op-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const op = btn.dataset.op;
                 expression += op;
-                expressionDisplay += disp;
-            } else if (button.id === 'clear-button') {
-                expression = ''; expressionDisplay = '';
-                usedButtons.forEach(btn => btn.disabled = false);
-                usedButtons = []; messageElement.textContent = '';
-            } else if (button.id === 'undo-button') {
-                if (expressionDisplay.length > 0) {
-                    const last = expressionDisplay.slice(-1);
-                    if (!isNaN(last) && usedButtons.length > 0) {
-                        usedButtons.pop().disabled = false;
-                    }
-                    expression = expression.slice(0, -1);
-                    expressionDisplay = expressionDisplay.slice(0, -1);
-                }
-            }
+                expressionDisplay += btn.textContent;
+                updateExpression();
+            });
+        });
+
+        clearButton.addEventListener('click', () => {
+            expression = ''; expressionDisplay = '';
+            usedButtons.forEach(b => b.disabled = false);
+            usedButtons = []; messageElement.textContent = '';
             updateExpression();
-        }
-        
+        });
+
+        undoButton.addEventListener('click', () => {
+            if (expressionDisplay.length > 0) {
+                const last = expressionDisplay.slice(-1);
+                if (!isNaN(last) && usedButtons.length > 0) {
+                    usedButtons.pop().disabled = false;
+                }
+                expression = expression.slice(0, -1);
+                expressionDisplay = expressionDisplay.slice(0, -1);
+                updateExpression();
+            }
+        });
+
         checkButton.addEventListener('click', checkResult);
         newGameButton.addEventListener('click', generateNumbers);
-        clearButton.addEventListener('click', handleButtonClick);
-        undoButton.addEventListener('click', handleButtonClick);
-        actionButtonsGrid.querySelectorAll('.op-button').forEach(b => b.addEventListener('click', handleButtonClick));
+        
         generateNumbers();
     });
 </script>
