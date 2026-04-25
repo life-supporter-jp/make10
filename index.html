@@ -3,316 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MP3再生リスト（ページネーション上下表示）</title>
+    <title>メイクテン - 数字で10を作ろう</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: "Hiragino Kaku Gothic Pro", "Noto Sans JP", sans-serif;
-            padding: 20px;
-            margin: 0;
-            line-height: 1.6;
-            color: #333;
+        /* マイライフ準拠のベース設定 */
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            font-size: 18px; 
+            color: #333; 
+            background: #f0f2f5; 
+            line-height: 1.6; 
         }
-        h2 {
+        .wrap { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: #fff; 
+            min-height: 100vh; 
+            padding: 20px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+        }
+
+        /* ヘッダー画像 */
+        .banner-container img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px; }
+        
+        /* ゲームコンテナ */
+        .game-card {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 2px solid #e2e8f0;
             text-align: center;
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
-        .center-text {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .container {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 20px;
+
+        .main-title { font-size: 24px; font-weight: bold; color: #4a90e2; margin-bottom: 1rem; }
+
+        /* 数字タイル表示（問題） */
+        #numbers { display: flex; justify-content: center; gap: 10px; margin-bottom: 1.5rem; }
+        .number-tile {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #63b3ed;
+            width: 55px;
+            height: 55px;
             border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
         }
-        .mp3-item {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
+
+        /* 計算式表示エリア */
+        #expression {
+            font-size: 1.8rem;
+            min-height: 3.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 3px solid #cbd5e0;
+            margin-bottom: 1rem;
+            padding: 0 10px;
+            color: #2d3748;
+        }
+
+        /* 操作ボタン群 */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            max-width: 320px;
+            margin: 0 auto 1.5rem;
+            gap: 10px;
+        }
+        .action-button {
+            aspect-ratio: 1 / 1;
+            font-size: 1.4rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
             display: flex;
             align-items: center;
-            background: #fff;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s;
         }
-        .mp3-content {
-            flex-grow: 1;
-        }
-        .mp3-item h3 {
-            font-size: 16px;
-            margin: 0 0 10px 0;
-        }
-        audio {
-            width: 100%;
-        }
-        .status {
-            color: #d9534f;
-            font-weight: bold;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-        /* お気に入りスタイル */
-        .favorite-box {
-            margin-left: 15px;
-        }
-        .favorite-box label {
-            cursor: pointer;
-            font-size: 28px;
-        }
-        .favorite-box input[type="checkbox"] + label:before {
-            content: '☆';
-            color: #ccc;
-        }
-        .favorite-box input[type="checkbox"]:checked + label:before {
-            content: '★';
-            color: #f1c40f;
-        }
-        .favorite-box input[type="checkbox"] {
-            display: none;
-        }
-        /* ページネーション */
-        .pagination {
-            text-align: center;
-            padding: 10px 0;
-            overflow-x: auto;
-            white-space: nowrap;
-            margin-bottom: 15px;
-        }
-        .pagination button {
-            background-color: #f8f9fa;
-            border: 1px solid #ccc;
-            padding: 8px 14px;
-            margin: 0 2px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #000;
-            border-radius: 4px;
-        }
-        .pagination button:hover:not(.active) {
-            background-color: #e2e6ea;
-        }
-        .pagination button.active {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-        .info-image {
-            display: block;
-            margin: 20px auto;
-            max-width: 100%;
-            height: auto;
-        }
-        .footer-section {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px solid #eee;
+        .action-button:active { transform: scale(0.95); }
+
+        .number-button { background-color: #48bb78; color: #fff; }
+        .number-button:disabled { background-color: #cbd5e0; color: #718096; }
+        .op-button { background-color: #f6ad55; color: #fff; }
+        .control-button { background-color: #e53e3e; color: #fff; }
+
+        /* メッセージ */
+        .message { font-size: 1.1rem; font-weight: bold; min-height: 2rem; margin-bottom: 1rem; }
+        .correct { color: #38a169; }
+        .incorrect { color: #e53e3e; }
+
+        /* 解答例リスト */
+        .solution-container { margin-top: 1.5rem; border-top: 2px solid #edf2f7; padding-top: 1rem; text-align: left; }
+        .solution-item { font-size: 1rem; padding: 5px 0; border-bottom: 1px dashed #e2e8f0; }
+
+        /* フッターメッセージ */
+        .footer-msg { font-size: 18px; font-weight: bold; margin-top: 30px; }
+        .link-url { color: blue; font-size: 20px; text-decoration: underline; word-break: break-all; }
+
+        @media (max-width: 600px) {
+            .wrap { padding: 10px; }
+            .number-tile { width: 45px; height: 45px; font-size: 1.2rem; }
+            #expression { font-size: 1.4rem; }
         }
     </style>
 </head>
 <body>
 
-<img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012099.jpg" class="info-image">
-
-<h2>再生するまでの準備時間があります。少しお待ちください。</h2>
-<div class="center-text">３００曲の内の１５曲を選んでみました。</div>
-
-<h2 id="mainTitle">MP3再生リスト</h2>
-
-<div class="pagination top" id="paginationControlsTop"></div>
-<div class="center-text"><small>上部をスライドしてリストを選択してください。</small></div>
-
-<div class="container" id="mp3Container"></div>
-
-<div class="pagination bottom" id="paginationControlsBottom"></div>
-<div class="center-text"><small>スライドしてページを切り替えられます。</small></div>
-
-<script>
-    const mp3Data = [
-        ["軽快でお洒落な電子ピアノのテクノポップス", "103.mp3"],
-        ["ゆったりとしたオーケストラ楽曲", "105.mp3"],
-        ["美しいピアノメロディー", "117.mp3"],
-        ["落ち着いた雰囲気の大人なジャズ", "127.mp3"],
-        ["神秘的で温もりのある美しいヒーリング", "146.mp3"],
-        ["切なく美しいバイオリンピアノサウンド", "158.mp3"],
-        ["バイオリンクラシック", "168.mp3"],
-        ["水辺にいるようなヒーリング系ストリングス", "177.mp3"],
-        ["お洒落なピアノシンセ", "187.mp3"],
-        ["壮大で可愛らしいミュージック", "197.mp3"],
-        ["大人な雰囲気のスロージャズバラード", "210.mp3"],
-        ["キュートでかわいいメロディのポップス", "222.mp3"],
-        ["スウィートでウォームなバラード", "235.mp3"],
-        ["上品 おしゃれ ムード 穏やか 大人", "251.mp3"],
-        ["苦悩をこえて、愛がかなう。ラストシーン", "399.mp3"]
-    ];
-
-    const baseUrl = "https://life-supporter.jp/sp/hxySQ4ff/VjDWurLR/images/MP3/";
-    const mainTitle = document.getElementById("mainTitle");
-    const container = document.getElementById("mp3Container");
-    const paginationControlsTop = document.getElementById("paginationControlsTop");
-    const paginationControlsBottom = document.getElementById("paginationControlsBottom");
-    const FAVORITES_KEY = "mp3Favorites";
-
-    const ITEMS_PER_PAGE = 5;
-    const TOTAL_PAGES = Math.ceil(mp3Data.length / ITEMS_PER_PAGE);
-    let currentPage = 1;
-
-    function loadFavorites() {
-        try {
-            const stored = localStorage.getItem(FAVORITES_KEY);
-            return stored ? JSON.parse(stored) : {};
-        } catch (e) { return {}; }
-    }
-
-    function saveFavorites(favorites) {
-        try {
-            localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-        } catch (e) { console.error(e); }
-    }
-
-    let favorites = loadFavorites();
-
-    function handlePlayAttempt(audioElement, statusElement) {
-        if (audioElement.readyState >= 4) {
-            audioElement.play().catch(e => {});
-            statusElement.textContent = '';
-            return;
-        }
-        statusElement.textContent = '⌛ 準備中...';
-        audioElement.controls = false;
-        
-        const canplaythroughHandler = () => {
-            statusElement.textContent = '✅ 再生準備完了';
-            audioElement.controls = true;
-            audioElement.removeEventListener('canplaythrough', canplaythroughHandler);
-            audioElement.play().catch(e => {
-                statusElement.textContent = '✅ 再生準備完了 (再生ボタンを押してください)';
-            });
-        };
-        audioElement.addEventListener('canplaythrough', canplaythroughHandler);
-        audioElement.load();
-    }
-
-    function displayList(page) {
-        container.innerHTML = '';
-        const start = (page - 1) * ITEMS_PER_PAGE;
-        const end = start + ITEMS_PER_PAGE;
-        const pageData = mp3Data.slice(start, end);
-
-        pageData.forEach(([title, filename], index) => {
-            const item = document.createElement("div");
-            item.className = "mp3-item";
-            
-            const contentDiv = document.createElement("div");
-            contentDiv.className = "mp3-content";
-
-            const titleElem = document.createElement("h3");
-            titleElem.textContent = `${start + index + 1}. ${title}`;
-
-            const audio = document.createElement("audio");
-            audio.controls = true;
-            audio.setAttribute('controlsList', 'nodownload');
-            audio.oncontextmenu = () => false;
-            
-            const source = document.createElement("source");
-            source.src = baseUrl + filename;
-            source.type = "audio/mpeg";
-            audio.appendChild(source);
-            
-            const statusDiv = document.createElement("div");
-            statusDiv.className = "status";
-            
-            audio.addEventListener('play', (e) => {
-                document.querySelectorAll('audio').forEach(a => {
-                    if (a !== audio && !a.paused) a.pause();
-                });
-                handlePlayAttempt(audio, statusDiv);
-            });
-
-            contentDiv.appendChild(titleElem);
-            contentDiv.appendChild(audio);
-            contentDiv.appendChild(statusDiv);
-
-            const favoriteBox = document.createElement("div");
-            favoriteBox.className = "favorite-box";
-            const checkboxId = `fav-${start + index}`;
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = checkboxId;
-            checkbox.checked = favorites[filename] || false;
-
-            const label = document.createElement("label");
-            label.htmlFor = checkboxId;
-
-            checkbox.addEventListener('change', (e) => {
-                favorites[filename] = e.target.checked;
-                saveFavorites(favorites);
-            });
-
-            favoriteBox.appendChild(checkbox);
-            favoriteBox.appendChild(label);
-            item.appendChild(contentDiv);
-            item.appendChild(favoriteBox);
-            container.appendChild(item);
-        });
-        
-        renderPaginationControls(page, paginationControlsTop);
-        renderPaginationControls(page, paginationControlsBottom);
-    }
-
-    function renderPaginationControls(activePage, targetElement) {
-        targetElement.innerHTML = '';
-        const prevButton = document.createElement('button');
-        prevButton.textContent = '≪ 前へ';
-        prevButton.disabled = activePage === 1;
-        prevButton.onclick = () => changePage(activePage - 1);
-        targetElement.appendChild(prevButton);
-
-        for (let i = 1; i <= TOTAL_PAGES; i++) {
-            const button = document.createElement('button');
-            button.textContent = i;
-            if (i === activePage) button.classList.add('active');
-            button.onclick = () => changePage(i);
-            targetElement.appendChild(button);
-        }
-
-        const nextButton = document.createElement('button');
-        nextButton.textContent = '次へ ≫';
-        nextButton.disabled = activePage === TOTAL_PAGES;
-        nextButton.onclick = () => changePage(activePage + 1);
-        targetElement.appendChild(nextButton);
-    }
-
-    function changePage(page) {
-        if (page >= 1 && page <= TOTAL_PAGES) {
-            currentPage = page;
-            displayList(currentPage);
-            mainTitle.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-
-    displayList(currentPage);
-</script>
-
-<div class="footer-section">
-    <p><b>今回のアプリは如何だったでしょうか？<br>
-    他にも使えるアプリ、脳トレができるゲームや趣味に俳句、和歌などが利用できるサイトをご案内します。</b></p>
-    <p><b>また大事な記録をサーバーに残せるサイトで、何かあった時に情報開示も指定できるサイトです。<br>
-    スマホのID、PWを記録しておくと安心です。</b></p>
-
-    <img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012085.jpg" class="info-image">
-
-    <div style="font-size: 24px; font-weight: bold; margin: 20px 0;">
-        以下より体験版をご確認ください。
+<div class="wrap">
+    <div class="banner-container">
+        <img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012099.jpg">
     </div>
 
-    <img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px;">
-    
-    <div style="margin-top: 10px;">
-        <a href="https://life-supporter.jp/lp/HRSuykFf" style="font-size: 20px; color: #007bff; text-decoration: none; font-weight: bold;">
-            https://life-supporter.jp/lp/HRSuykFf
-        </a>
+    <div style="text-align:center; margin-top:15px;">
+        <h2>数字と演算子を使って「10」を作ろう！</h2>
+    </div>
+
+    <div class="game-card">
+        <div class="main-title">メイクテン</div>
+        
+        <div id="numbers"></div>
+        <div id="expression"></div>
+        <div class="message" id="message"></div>
+
+        <p style="margin-bottom:15px;"><b>下のボタンをタップして式を作ろう！</b></p>
+        
+        <div class="buttons-grid" id="action-buttons-grid">
+            <button class="action-button op-button" data-op="+">+</button>
+            <button class="action-button op-button" data-op="-">-</button>
+            <button class="action-button op-button" data-op="*">×</button>
+            <button class="action-button op-button" data-op="/">÷</button>
+            
+            <button class="action-button op-button" id="paren-open" data-op="(">(</button>
+            <button class="action-button op-button" id="paren-close" data-op=")">)</button>
+            <button class="action-button control-button" id="undo-button">←</button>
+            <button class="action-button control-button" id="clear-button">C</button>
+        </div>
+
+        <div class="flex justify-center gap-4">
+            <button class="px-6 py-3 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600" id="check-button">チェック</button>
+            <button class="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-blue-600" id="new-game-button">次の問題</button>
+        </div>
+
+        <div id="solution-container" class="solution-container hidden">
+            <div style="font-weight:bold; color:#4a90e2; margin-bottom:10px;">すべての解答例:</div>
+            <ul id="solution-list" class="list-none p-0"></ul>
+        </div>
+    </div>
+
+    <div style="background:#f9fafb; padding:15px; border-radius:8px; font-size:16px;">
+        <h3 style="font-weight:bold; border-left:4px solid #4a90e2; padding-left:10px; margin-bottom:10px;">遊び方</h3>
+        <ul style="list-style:none; padding:0;">
+            <li>1. <b>「次の問題」</b>で4つの数字を出します。</li>
+            <li>2. 数字と <b>＋ － × ÷ ( )</b> を使って計算結果を<b>10</b>にします。</li>
+            <li>3. 数字は必ず<b>1回ずつすべて</b>使ってください。</li>
+            <li>4. <b>「チェック」</b>で判定。解答例も表示されます。</li>
+        </ul>
+    </div>
+
+    <hr style="margin: 30px 0;">
+
+    <div class="footer-msg">
+        今回のアプリは如何だったでしょうか？他にも使えるアプリ、脳トレができるゲームや趣味に俳句、和歌などが利用できるサイトをご案内します。また大事な記録をサーバーに残せるサイトで、何かあった時に情報開示も指定できるサイトです。スマホのID、PWを記録しておくと安心です。
+    </div>
+
+    <div class="banner-container" style="margin-top:20px;">
+        <img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012085.jpg">
+    </div>
+
+    <div style="text-align: center; margin-top: 25px;"><b>以下より体験版をご確認ください。</b></div>
+    <p style="text-align: center;"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px;"></p>
+    <div style="text-align: center; margin-bottom: 40px;">
+        <a href="https://life-supporter.jp/lp/HRSuykFf" class="link-url">https://life-supporter.jp/lp/HRSuykFf</a>
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const numbersContainer = document.getElementById('numbers');
+        const expressionElement = document.getElementById('expression');
+        const messageElement = document.getElementById('message');
+        const newGameButton = document.getElementById('new-game-button');
+        const checkButton = document.getElementById('check-button');
+        const clearButton = document.getElementById('clear-button');
+        const undoButton = document.getElementById('undo-button');
+        const actionButtonsGrid = document.getElementById('action-buttons-grid');
+        const solutionContainer = document.getElementById('solution-container');
+        const solutionList = document.getElementById('solution-list');
+        
+        let currentNumbers = [];
+        let expression = '';        
+        let expressionDisplay = ''; 
+        let usedButtons = [];       
+        const OPS = ['+', '-', '*', '/']; 
+
+        function generateNumbers() {
+            currentNumbers = [];
+            usedButtons = [];
+            actionButtonsGrid.querySelectorAll('.number-button').forEach(btn => btn.remove());
+            for (let i = 0; i < 4; i++) {
+                currentNumbers.push(Math.floor(Math.random() * 9) + 1);
+            }
+            renderButtons();
+            renderNumbers();
+            expression = '';
+            expressionDisplay = '';
+            updateExpression();
+            messageElement.textContent = '';
+            solutionContainer.classList.add('hidden');
+        }
+        
+        function renderButtons() {
+            for (let i = 3; i >= 0; i--) { 
+                const num = currentNumbers[i];
+                const button = document.createElement('button');
+                button.classList.add('action-button', 'number-button');
+                button.textContent = num;
+                button.setAttribute('data-index', i);
+                actionButtonsGrid.prepend(button); 
+                button.addEventListener('click', handleButtonClick);
+            }
+        }
+
+        function renderNumbers() {
+            numbersContainer.innerHTML = '';
+            currentNumbers.forEach(num => {
+                const tile = document.createElement('div');
+                tile.textContent = num;
+                tile.classList.add('number-tile');
+                numbersContainer.appendChild(tile);
+            });
+        }
+
+        function updateExpression() {
+            expressionElement.textContent = expressionDisplay;
+        }
+
+        function checkResult() {
+            if (usedButtons.length !== 4) {
+                messageElement.textContent = 'すべての数字を使い切ってください。';
+                messageElement.className = 'message incorrect';
+                return;
+            }
+            try {
+                let calcExpression = expression.replace(/×/g, '*').replace(/÷/g, '/');
+                const result = eval(calcExpression);
+                if (Math.abs(result - 10) < 0.0001) {
+                    messageElement.textContent = '正解です！お見事！';
+                    messageElement.className = 'message correct';
+                } else {
+                    messageElement.textContent = `残念！ 答えは ${result} でした。`;
+                    messageElement.className = 'message incorrect';
+                }
+            } catch (e) {
+                messageElement.textContent = '式が正しくありません。';
+                messageElement.className = 'message incorrect';
+            }
+            displayAllSolutions();
+        }
+
+        function displayAllSolutions() {
+            solutionList.innerHTML = '';
+            solutionContainer.classList.remove('hidden');
+            const solutions = findSolutions(currentNumbers);
+            if (solutions.length === 0) {
+                solutionList.innerHTML = '<li class="solution-item">この問題には10になる組み合わせがありませんでした。</li>';
+                return;
+            }
+            solutions.slice(0, 10).forEach(sol => {
+                const li = document.createElement('li');
+                li.className = 'solution-item';
+                li.textContent = sol.startsWith('(') ? sol.slice(1,-1) : sol;
+                solutionList.appendChild(li);
+            });
+        }
+
+        function findSolutions(nums) {
+            const solutions = new Set();
+            function solve(arr) {
+                if (arr.length === 1) {
+                    if (Math.abs(arr[0].val - 10) < 0.0001) solutions.add(arr[0].exp);
+                    return;
+                }
+                for (let i = 0; i < arr.length; i++) {
+                    for (let j = 0; j < arr.length; j++) {
+                        if (i === j) continue;
+                        const a = arr[i], b = arr[j];
+                        const rest = arr.filter((_, k) => k !== i && k !== j);
+                        solve([{val: a.val + b.val, exp: `(${a.exp}+${b.exp})`}, ...rest]);
+                        solve([{val: a.val - b.val, exp: `(${a.exp}-${b.exp})`}, ...rest]);
+                        solve([{val: a.val * b.val, exp: `(${a.exp}×${b.exp})`}, ...rest]);
+                        if (Math.abs(b.val) > 0.0001) solve([{val: a.val / b.val, exp: `(${a.exp}÷${b.exp})`}, ...rest]);
+                    }
+                }
+            }
+            solve(nums.map(n => ({val: n, exp: n.toString()})));
+            return Array.from(solutions);
+        }
+
+        function handleButtonClick(e) {
+            const button = e.target;
+            if (button.classList.contains('number-button')) {
+                expression += button.textContent;
+                expressionDisplay += button.textContent;
+                usedButtons.push(button);
+                button.disabled = true;
+            } else if (button.getAttribute('data-op')) {
+                const op = button.getAttribute('data-op');
+                const disp = button.textContent;
+                expression += op;
+                expressionDisplay += disp;
+            } else if (button.id === 'clear-button') {
+                expression = ''; expressionDisplay = '';
+                usedButtons.forEach(btn => btn.disabled = false);
+                usedButtons = []; messageElement.textContent = '';
+            } else if (button.id === 'undo-button') {
+                if (expressionDisplay.length > 0) {
+                    const last = expressionDisplay.slice(-1);
+                    if (!isNaN(last) && usedButtons.length > 0) {
+                        usedButtons.pop().disabled = false;
+                    }
+                    expression = expression.slice(0, -1);
+                    expressionDisplay = expressionDisplay.slice(0, -1);
+                }
+            }
+            updateExpression();
+        }
+        
+        checkButton.addEventListener('click', checkResult);
+        newGameButton.addEventListener('click', generateNumbers);
+        clearButton.addEventListener('click', handleButtonClick);
+        undoButton.addEventListener('click', handleButtonClick);
+        actionButtonsGrid.querySelectorAll('.op-button').forEach(b => b.addEventListener('click', handleButtonClick));
+        generateNumbers();
+    });
+</script>
 </body>
 </html>
