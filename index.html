@@ -6,27 +6,117 @@
     <title>メイクテン - 数字で10を作ろう</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* マイライフ準拠のベース設定 */
         * { box-sizing: border-box; }
-        body { font-family: 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif; margin: 0; padding: 0; font-size: 18px; color: #333; background: #f0f2f5; line-height: 1.6; }
-        .wrap { max-width: 800px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        body { 
+            font-family: 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            font-size: 18px; 
+            color: #333; 
+            background: #f0f2f5; 
+            line-height: 1.6; 
+        }
+        .wrap { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: #fff; 
+            min-height: 100vh; 
+            padding: 20px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+        }
+
+        /* ヘッダー画像 */
         .banner-container img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px; }
-        .game-card { background-color: #fff; padding: 1.5rem; border-radius: 1rem; border: 2px solid #e2e8f0; text-align: center; margin: 20px 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        
+        /* ゲームカード */
+        .game-card {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 2px solid #e2e8f0;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
         .main-title { font-size: 24px; font-weight: bold; color: #4a90e2; margin-bottom: 1rem; }
+
+        /* 数字タイル表示 */
         #numbers { display: flex; justify-content: center; gap: 10px; margin-bottom: 1.5rem; }
-        .number-tile { font-size: 1.5rem; font-weight: bold; color: #fff; background-color: #63b3ed; width: 55px; height: 55px; border-radius: 8px; display: flex; justify-content: center; align-items: center; box-shadow: 0 3px 5px rgba(0,0,0,0.1); }
-        #expression { font-size: 1.8rem; min-height: 3.5rem; display: flex; justify-content: center; align-items: center; border-bottom: 3px solid #cbd5e0; margin-bottom: 1rem; padding: 0 10px; color: #2d3748; word-break: break-all; }
-        .buttons-grid { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 320px; margin: 0 auto 1.5rem; gap: 12px; }
-        .action-button { aspect-ratio: 1 / 1; font-size: 1.4rem; font-weight: bold; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s; }
+        .number-tile {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #63b3ed;
+            width: 55px;
+            height: 55px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+
+        /* 計算式表示エリア */
+        #expression {
+            font-size: 1.8rem;
+            min-height: 3.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 3px solid #cbd5e0;
+            margin-bottom: 1rem;
+            padding: 0 10px;
+            color: #2d3748;
+            word-break: break-all;
+        }
+
+        /* 操作ボタン群 */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            max-width: 320px;
+            margin: 0 auto 1.5rem;
+            gap: 12px;
+        }
+        .action-button {
+            aspect-ratio: 1 / 1;
+            font-size: 1.4rem;
+            font-weight: bold;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
         .action-button:active { transform: scale(0.95); }
+
         .number-button { background-color: #48bb78; color: #fff; }
+        .number-button:disabled { background-color: #cbd5e0; color: #718096; cursor: not-allowed; }
         .op-button { background-color: #f6ad55; color: #fff; }
         .control-button { background-color: #e53e3e; color: #fff; }
+
+        /* メッセージ */
         .message { font-size: 1.1rem; font-weight: bold; min-height: 2rem; margin-bottom: 1rem; }
         .correct { color: #38a169; }
         .incorrect { color: #e53e3e; }
+
+        /* 解答例リスト */
         .solution-container { margin-top: 1.5rem; border-top: 2px solid #edf2f7; padding-top: 1rem; text-align: left; }
         .solution-item { font-size: 1rem; padding: 5px 0; border-bottom: 1px dashed #e2e8f0; }
-        .center-box { text-align: center; margin: 40px auto; }
+
+        /* フッター */
+        .footer-msg { font-size: 18px; font-weight: bold; margin-top: 30px; }
+        .qr-area { text-align: center; margin-top: 40px; padding-bottom: 50px; }
+
+        @media (max-width: 600px) {
+            .wrap { padding: 10px; }
+            .number-tile { width: 45px; height: 45px; font-size: 1.2rem; }
+            #expression { font-size: 1.4rem; }
+            .buttons-grid { gap: 8px; }
+        }
     </style>
 </head>
 <body>
@@ -42,9 +132,11 @@
 
     <div class="game-card">
         <div class="main-title">メイクテン</div>
+        
         <div id="numbers"></div>
         <div id="expression"></div>
         <div class="message" id="message"></div>
+
         <p style="margin-bottom:15px;"><b>下のボタンをタップして計算式を作ろう！</b></p>
         
         <div class="buttons-grid" id="action-buttons-grid">
@@ -52,6 +144,7 @@
             <button class="action-button op-button" data-op="-">-</button>
             <button class="action-button op-button" data-op="*">×</button>
             <button class="action-button op-button" data-op="/">÷</button>
+            
             <button class="action-button op-button" data-op="(">(</button>
             <button class="action-button op-button" data-op=")">)</button>
             <button class="action-button control-button" id="undo-button">←</button>
@@ -69,38 +162,305 @@
         </div>
     </div>
 
-    <div class="center-box">
-        <div class="info-text">今回のアプリは如何だったでしょうか？...（省略）...スマホのID、PWを記録しておくと安心です。</div>
-        <img src="https://life-supporter.jp/sp/hxySQ4ff/8BaRR2j8/images/XS012098.jpg" style="display:block; margin:20px auto; max-width:100%;">
+      <div class="footer-info">
+    <div class="info-text">
+     今回のアプリは如何だったでしょうか？他にも使えるアプリ、脳トレができるゲームや趣味に俳句、和歌などが利用できるサイトをご案内します。また大事な記録をサーバーに残せるサイトで、何かあった時に情報開示も指定できるサイトです。スマホのID、PWを記録しておくと安心です。
     </div>
-
-    <div class="center-box">
-        <p><b>さらにアプリプレゼントはラインから。</b></p>
-        <div class="qrcode" style="display:inline-block; margin: 20px 0;"></div>
-        <div>
-            <a href="https://g0qiltvg.autosns.app/line">
-                <img width="300" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png">
-            </a>
-        </div>
+    <img src="https://life-supporter.jp/sp/hxySQ4ff/8BaRR2j8/images/XS012098.jpg" style="display:block; margin:20px auto; max-width:100%;">
+    <div style="text-align:center;"><span style="font-size:18px;"><b>さらにアプリプレゼントはラインから。</b></span></div>
+  </div>
+<p></p>  
+<!-- LINE友達 -->
+<div style="display: flex; justify-content: center; align-items: center;">
+    <div>
+        <a href="https://g0qiltvg.autosns.app/line" class="addfriend_href">
+            <div style="margin: 0 auto; width: 200px; height: 200px;">
+                <div class="qrcode" style="margin:25px 0 0 0; text-align: center;"></div>
+            </div>
+        </a>
     </div>
-
-    <div class="center-box">
-        <p><b>以下は14日会員サイト無料体験版のご案内です。</b></p>
-        <img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px; margin: 10px auto;">
-        <div style="margin-top: 20px;">
-            <a href="https://life-supporter.jp/lp/HRSuykFf" style="display: inline-block; padding: 20px 50px; background-color: #007bff; color: #fff; font-weight: bold; border-radius: 8px;">無料体験案内を確認する</a>
-        </div>
-    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    window.addEventListener("load", function() {
+        let url = new URL(window.location.href);
+        let get_params = {};
+        for(entry of url.searchParams) {
+            get_params[entry[0]] = entry[1];
+        }
+                    get_params['content_element_lp_id'] = "";
+                            get_params['scenario_id'] = "";
+                            get_params['partner_id'] = "A8ildpNc2q";
+                for(key in get_params) { 
+            let span = document.createElement('span');
+            let element_id = `proline-copy-qr-get-params-${key}`;
+            span.className = 'proline-copy-qr-get-params';
+            span.setAttribute('data-key', key);
+            span.setAttribute('data-value', get_params[key]);
+            span.setAttribute('id', element_id);
+            let old_element = document.querySelector(`#${element_id}`);
+            if(old_element) {
+                old_element.remove();
+            }
+            document.body.appendChild(span);
+        }
+    });
+</script>
+<script src="https://autosns.jp/js/zbp/jquery.qrcode.min.js"></script>
+<script src="https://g0qiltvg.autosns.app/copy-qr/js?height=200&show=1"></script>
+<p></p>
+<p></p>  
+<!-- ここまでQRコード -->  
+<p></p>      
+<div style="display: flex; justify-content: center;">
+    <a href="https://g0qiltvg.autosns.app/line" class="addfriend_href">
+        <img  width="300" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png">
+    </a>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    window.addEventListener("load", function() {
+        let url = new URL(window.location.href);
+        let get_params = {};
+        for(entry of url.searchParams) {
+            get_params[entry[0]] = entry[1];
+        }
+                    get_params['content_element_lp_id'] = "";
+                            get_params['scenario_id'] = "";
+                            get_params['partner_id'] = "A8ildpNc2q";
+                for(key in get_params) { 
+            let span = document.createElement('span');
+            let element_id = `proline-copy-qr-get-params-${key}`;
+            span.className = 'proline-copy-qr-get-params';
+            span.setAttribute('data-key', key);
+            span.setAttribute('data-value', get_params[key]);
+            span.setAttribute('id', element_id);
+            let old_element = document.querySelector(`#${element_id}`);
+            if(old_element) {
+                old_element.remove();
+            }
+            document.body.appendChild(span);
+        }
+    });
+</script>
 <script src="https://autosns.jp/js/zbp/jquery.qrcode.min.js"></script>
-<script src="https://g0qiltvg.autosns.app/copy-qr/js?height=200&show=1"></script>
+<script src="https://g0qiltvg.autosns.app/copy-qr/js?height=&show=0"></script>
+
+<!-- LINE友達 -->
+<br><br><br>
+<!-- 14日体験案内-->
+<div style="text-align:center;"><span style="font-size:18px;"><b>以下は14日会員サイト無料体験版のご案内です。</b></span></div>
+    <p style="text-align:center;"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px;"></p>
+    <div style="text-align: center; margin-bottom: 50px;">
+  <a href="https://life-supporter.jp/lp/HRSuykFf" 
+     style="display: inline-block; 
+            padding: 20px 50px; 
+            background-color: #007bff; 
+            color: #ffffff; 
+            font-size: 22px; 
+            font-weight: bold; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;">
+    無料体験案内を確認する
+  </a>
+</div>
+<p></p>  
+<p></p>    
+<!-- 14日体験案内-->  
+  <input type="file" id="jsonFile" style="display:none">
+  <input type="file" id="excelFile" style="display:none" accept=".xlsx,.xls">
+</div>
 
 <script>
-    // ゲームロジックはここに記述してください
     document.addEventListener('DOMContentLoaded', () => {
-        // ... (元のJavaScriptロジックをここに貼り付けてください)
+        const numbersContainer = document.getElementById('numbers');
+        const expressionElement = document.getElementById('expression');
+        const messageElement = document.getElementById('message');
+        const newGameButton = document.getElementById('new-game-button');
+        const checkButton = document.getElementById('check-button');
+        const clearButton = document.getElementById('clear-button');
+        const undoButton = document.getElementById('undo-button');
+        const actionButtonsGrid = document.getElementById('action-buttons-grid');
+        const solutionContainer = document.getElementById('solution-container');
+        const solutionList = document.getElementById('solution-list');
+        
+        let currentNumbers = [];
+        let expression = '';        
+        let expressionDisplay = ''; 
+        let usedButtons = [];       
+
+        function generateNumbers() {
+            currentNumbers = [];
+            usedButtons = [];
+            actionButtonsGrid.querySelectorAll('.number-button').forEach(btn => btn.remove());
+            
+            // 少なくとも1つは解がある数字の組み合わせを探す（簡易ループ）
+            for(let attempt = 0; attempt < 10; attempt++){
+                let tempNums = Array.from({length: 4}, () => Math.floor(Math.random() * 9) + 1);
+                if(findSolutions(tempNums).length > 0) {
+                    currentNumbers = tempNums;
+                    break;
+                }
+                currentNumbers = tempNums; // 解がなくても最後はセット
+            }
+
+            renderButtons();
+            renderNumbers();
+            expression = '';
+            expressionDisplay = '';
+            updateExpression();
+            messageElement.textContent = '';
+            solutionContainer.classList.add('hidden');
+        }
+        
+        function renderButtons() {
+            // 数字ボタンをグリッドの最初に追加
+            for (let i = 3; i >= 0; i--) { 
+                const num = currentNumbers[i];
+                const button = document.createElement('button');
+                button.classList.add('action-button', 'number-button');
+                button.textContent = num;
+                button.addEventListener('click', () => {
+                    expression += num;
+                    expressionDisplay += num;
+                    usedButtons.push(button);
+                    button.disabled = true;
+                    updateExpression();
+                });
+                actionButtonsGrid.prepend(button); 
+            }
+        }
+
+        function renderNumbers() {
+            numbersContainer.innerHTML = '';
+            currentNumbers.forEach(num => {
+                const tile = document.createElement('div');
+                tile.textContent = num;
+                tile.classList.add('number-tile');
+                numbersContainer.appendChild(tile);
+            });
+        }
+
+        function updateExpression() {
+            expressionElement.textContent = expressionDisplay;
+        }
+
+        function checkResult() {
+            if (usedButtons.length !== 4) {
+                messageElement.textContent = 'すべての数字を使い切ってください。';
+                messageElement.className = 'message incorrect';
+                return;
+            }
+            try {
+                let calc = expression.replace(/×/g, '*').replace(/÷/g, '/');
+                const result = eval(calc);
+                if (Math.abs(result - 10) < 0.0001) {
+                    messageElement.textContent = '正解です！素晴らしい！';
+                    messageElement.className = 'message correct';
+                } else {
+                    messageElement.textContent = `残念、答えは ${result} でした。`;
+                    messageElement.className = 'message incorrect';
+                }
+            } catch (e) {
+                messageElement.textContent = '計算式が正しくありません。';
+                messageElement.className = 'message incorrect';
+            }
+            showSolutions();
+        }
+
+        function showSolutions() {
+            const sols = findSolutions(currentNumbers);
+            solutionList.innerHTML = '';
+            solutionContainer.classList.remove('hidden');
+            if (sols.length === 0) {
+                solutionList.innerHTML = '<li class="solution-item">解が見つかりませんでした。</li>';
+            } else {
+                sols.slice(0, 5).forEach(s => {
+                    const li = document.createElement('li');
+                    li.className = 'solution-item';
+                    li.textContent = s.startsWith('(') ? s.slice(1, -1) : s;
+                    solutionList.appendChild(li);
+                });
+            }
+        }
+
+        function findSolutions(nums) {
+            const res = new Set();
+            function solve(arr) {
+                if (arr.length === 1) {
+                    if (Math.abs(arr[0].v - 10) < 0.001) res.add(arr[0].e);
+                    return;
+                }
+                for (let i = 0; i < arr.length; i++) {
+                    for (let j = 0; j < arr.length; j++) {
+                        if (i === j) continue;
+                        const a = arr[i], b = arr[j];
+                        const rest = arr.filter((_, k) => k !== i && k !== j);
+                        solve([{v: a.v + b.v, e: `(${a.e}+${b.e})`}, ...rest]);
+                        solve([{v: a.v - b.v, e: `(${a.e}-${b.e})`}, ...rest]);
+                        solve([{v: a.v * b.val, e: `(${a.e}×${b.e})`}, ...rest]);
+                        if (Math.abs(b.v) > 0.001) solve([{v: a.v / b.v, e: `(${a.e}÷${b.e})`}, ...rest]);
+                    }
+                }
+            }
+            // 内部計算用の簡略化
+            function solveInternal(a) {
+                if (a.length === 1) {
+                    if (Math.abs(a[0].v - 10) < 0.001) res.add(a[0].e);
+                    return;
+                }
+                for (let i = 0; i < a.length; i++) {
+                    for (let j = 0; j < a.length; j++) {
+                        if (i === j) continue;
+                        const rest = a.filter((_, k) => k !== i && k !== j);
+                        const v1 = a[i].v, v2 = a[j].v, e1 = a[i].e, e2 = a[j].e;
+                        solveInternal([{v: v1+v2, e: `(${e1}+${e2})`}, ...rest]);
+                        solveInternal([{v: v1-v2, e: `(${e1}-${e2})`}, ...rest]);
+                        solveInternal([{v: v1*v2, e: `(${e1}×${e2})`}, ...rest]);
+                        if (v2 !== 0) solveInternal([{v: v1/v2, e: `(${e1}÷${e2})`}, ...rest]);
+                    }
+                }
+            }
+            solveInternal(nums.map(n => ({v: n, e: n.toString()})));
+            return Array.from(res);
+        }
+
+        // 記号ボタンイベント
+        document.querySelectorAll('.op-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const op = btn.dataset.op;
+                expression += op;
+                expressionDisplay += btn.textContent;
+                updateExpression();
+            });
+        });
+
+        clearButton.addEventListener('click', () => {
+            expression = ''; expressionDisplay = '';
+            usedButtons.forEach(b => b.disabled = false);
+            usedButtons = []; messageElement.textContent = '';
+            updateExpression();
+        });
+
+        undoButton.addEventListener('click', () => {
+            if (expressionDisplay.length > 0) {
+                const last = expressionDisplay.slice(-1);
+                if (!isNaN(last) && usedButtons.length > 0) {
+                    usedButtons.pop().disabled = false;
+                }
+                expression = expression.slice(0, -1);
+                expressionDisplay = expressionDisplay.slice(0, -1);
+                updateExpression();
+            }
+        });
+
+        checkButton.addEventListener('click', checkResult);
+        newGameButton.addEventListener('click', generateNumbers);
+        
+        generateNumbers();
     });
 </script>
 </body>
