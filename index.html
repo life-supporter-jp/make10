@@ -7,40 +7,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * { box-sizing: border-box; }
-        body { 
-            font-family: 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif; 
-            margin: 0; padding: 0; font-size: 18px; color: #333; background: #f0f2f5; line-height: 1.6; 
-        }
-        .wrap { 
-            max-width: 800px; margin: 0 auto; background: #fff; min-height: 100vh; 
-            padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); 
-        }
+        body { font-family: 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif; margin: 0; padding: 0; font-size: 18px; color: #333; background: #f0f2f5; line-height: 1.6; }
+        .wrap { max-width: 800px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .banner-container img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px; }
-        .game-card {
-            background-color: #fff; padding: 1.5rem; border-radius: 1rem; border: 2px solid #e2e8f0;
-            text-align: center; margin: 20px 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+        .game-card { background-color: #fff; padding: 1.5rem; border-radius: 1rem; border: 2px solid #e2e8f0; text-align: center; margin: 20px 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .main-title { font-size: 24px; font-weight: bold; color: #4a90e2; margin-bottom: 1rem; }
         #numbers { display: flex; justify-content: center; gap: 10px; margin-bottom: 1.5rem; }
-        .number-tile {
-            font-size: 1.5rem; font-weight: bold; color: #fff; background-color: #63b3ed;
-            width: 55px; height: 55px; border-radius: 8px; display: flex;
-            justify-content: center; align-items: center; box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-        }
-        #expression {
-            font-size: 1.8rem; min-height: 3.5rem; display: flex; justify-content: center;
-            align-items: center; border-bottom: 3px solid #cbd5e0; margin-bottom: 1rem;
-            padding: 0 10px; color: #2d3748; word-break: break-all;
-        }
-        .buttons-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); max-width: 320px;
-            margin: 0 auto 1.5rem; gap: 12px;
-        }
-        .action-button {
-            aspect-ratio: 1 / 1; font-size: 1.4rem; font-weight: bold; border-radius: 0.5rem;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s;
-        }
+        .number-tile { font-size: 1.5rem; font-weight: bold; color: #fff; background-color: #63b3ed; width: 55px; height: 55px; border-radius: 8px; display: flex; justify-content: center; align-items: center; box-shadow: 0 3px 5px rgba(0,0,0,0.1); }
+        #expression { font-size: 1.8rem; min-height: 3.5rem; display: flex; justify-content: center; align-items: center; border-bottom: 3px solid #cbd5e0; margin-bottom: 1rem; padding: 0 10px; color: #2d3748; word-break: break-all; }
+        .buttons-grid { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 320px; margin: 0 auto 1.5rem; gap: 12px; }
+        .action-button { aspect-ratio: 1 / 1; font-size: 1.4rem; font-weight: bold; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s; }
         .action-button:active { transform: scale(0.95); }
         .number-button { background-color: #48bb78; color: #fff; }
         .op-button { background-color: #f6ad55; color: #fff; }
@@ -50,10 +26,7 @@
         .incorrect { color: #e53e3e; }
         .solution-container { margin-top: 1.5rem; border-top: 2px solid #edf2f7; padding-top: 1rem; text-align: left; }
         .solution-item { font-size: 1rem; padding: 5px 0; border-bottom: 1px dashed #e2e8f0; }
-        
-        /* センター配置用 */
         .center-box { text-align: center; margin: 40px auto; }
-        .qrcode { display: inline-block; }
     </style>
 </head>
 <body>
@@ -72,7 +45,6 @@
         <div id="numbers"></div>
         <div id="expression"></div>
         <div class="message" id="message"></div>
-
         <p style="margin-bottom:15px;"><b>下のボタンをタップして計算式を作ろう！</b></p>
         
         <div class="buttons-grid" id="action-buttons-grid">
@@ -97,30 +69,26 @@
         </div>
     </div>
 
-    <div class="footer-info">
-        <div class="info-text" style="text-align:center;">
-            今回のアプリは如何だったでしょうか？他にも使えるアプリ、脳トレができるゲームや趣味に俳句、和歌などが利用できるサイトをご案内します。また大事な記録をサーバーに残せるサイトで、何かあった時に情報開示も指定できるサイトです。スマホのID、PWを記録しておくと安心です。
-        </div>
+    <div class="center-box">
+        <div class="info-text">今回のアプリは如何だったでしょうか？...（省略）...スマホのID、PWを記録しておくと安心です。</div>
         <img src="https://life-supporter.jp/sp/hxySQ4ff/8BaRR2j8/images/XS012098.jpg" style="display:block; margin:20px auto; max-width:100%;">
     </div>
 
     <div class="center-box">
-        <p style="font-size:18px; margin-bottom:15px;"><b>さらにアプリプレゼントはラインから。</b></p>
-        <div class="qrcode" style="margin-bottom:20px;"></div>
+        <p><b>さらにアプリプレゼントはラインから。</b></p>
+        <div class="qrcode" style="display:inline-block; margin: 20px 0;"></div>
         <div>
-            <a href="https://g0qiltvg.autosns.app/line" class="addfriend_href">
-                <img width="300" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="LINE友だち追加">
+            <a href="https://g0qiltvg.autosns.app/line">
+                <img width="300" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png">
             </a>
         </div>
     </div>
 
     <div class="center-box">
-        <p style="font-size:18px;"><b>以下は14日会員サイト無料体験版のご案内です。</b></p>
+        <p><b>以下は14日会員サイト無料体験版のご案内です。</b></p>
         <img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px; margin: 10px auto;">
         <div style="margin-top: 20px;">
-            <a href="https://life-supporter.jp/lp/HRSuykFf" style="display: inline-block; padding: 20px 50px; background-color: #007bff; color: #ffffff; font-size: 22px; font-weight: bold; text-decoration: none; border-radius: 8px;">
-                無料体験案内を確認する
-            </a>
+            <a href="https://life-supporter.jp/lp/HRSuykFf" style="display: inline-block; padding: 20px 50px; background-color: #007bff; color: #fff; font-weight: bold; border-radius: 8px;">無料体験案内を確認する</a>
         </div>
     </div>
 </div>
@@ -130,9 +98,9 @@
 <script src="https://g0qiltvg.autosns.app/copy-qr/js?height=200&show=1"></script>
 
 <script>
-    // ゲームロジック等のスクリプトはそのまま記述してください
+    // ゲームロジックはここに記述してください
     document.addEventListener('DOMContentLoaded', () => {
-        // ... (ここに元のゲームロジックのJSを貼り付け)
+        // ... (元のJavaScriptロジックをここに貼り付けてください)
     });
 </script>
 </body>
